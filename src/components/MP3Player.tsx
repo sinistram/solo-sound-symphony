@@ -12,27 +12,35 @@ const MP3Player = () => {
 
   useEffect(() => {
     if (audioRef.current) {
-      setDuration(audioRef.current.duration || 0);
+      audioRef.current.addEventListener('loadedmetadata', () => {
+        setDuration(audioRef.current?.duration || 0);
+      });
     }
-  }, [audioRef.current?.duration]);
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setEqualizer(prev => 
-        prev.map(() => Math.random() * 100)
-      );
+      if (isPlaying) {
+        setEqualizer(prev => 
+          prev.map(() => Math.random() * 100)
+        );
+      }
     }, 100);
     return () => clearInterval(interval);
   }, [isPlaying]);
 
-  const togglePlay = () => {
+  const togglePlay = async () => {
     if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
+      try {
+        if (isPlaying) {
+          await audioRef.current.pause();
+        } else {
+          await audioRef.current.play();
+        }
+        setIsPlaying(!isPlaying);
+      } catch (error) {
+        console.error('Error playing audio:', error);
       }
-      setIsPlaying(!isPlaying);
     }
   };
 
@@ -78,7 +86,7 @@ const MP3Player = () => {
                 key={index}
                 className="flex-1 bg-neonGreen animate-equalizerBar"
                 style={{
-                  height: `${height}%`,
+                  height: `${isPlaying ? height : 0}%`,
                   animationDelay: `${index * 0.1}s`,
                 }}
               />
