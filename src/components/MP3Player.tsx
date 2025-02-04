@@ -139,7 +139,7 @@ const MP3Player = () => {
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={() => setDuration(audioRef.current?.duration || 0)}
-        src="/song.mp3"
+        src="https://file-examples.com/storage/fed070a54267a0d1f9ebf9a/2017/11/file_example_MP3_700KB.mp3"
       />
     </div>
   );
